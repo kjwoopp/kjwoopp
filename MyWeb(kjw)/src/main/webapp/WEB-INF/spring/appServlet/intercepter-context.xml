@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- 1. 새로운 스프링 설정파일 만들기 -->
+	<!-- 2. servlet-context와 같은 레벨설정 -->
+	<!-- 3.web.xml 경로추가 -->
+	<beans:bean id="user_i" class="com.team404.util.intercepter.UserIntercepter"/>
+	<beans:bean id="loginFormIntercepter" class="com.team404.util.intercepter.LoginFormIntercepter"/>
+	<beans:bean id="freeBoardIntercepter" class="com.team404.util.intercepter.FreeBoardIntercepter"/>
+	<interceptors>
+		<!-- 화면이동  User의 권한체크 -->
+		<!-- mypage이동과, 글등록시에는 반드시 로그인거치도록 처리 -->
+		<interceptor>
+			<mapping path="/user/userMypage"/>
+			<mapping path="/freeBoard/freeRegist"/>
+			<beans:ref bean="user_i"/>
+		</interceptor>
+		
+		<!-- 로그인 실행시 사용되는 post핸들러-->
+		<interceptor>
+			<mapping path="/user/loginForm"/>
+			<beans:ref bean="loginFormIntercepter"/>
+		</interceptor>
+		
+		<!-- 게시판 수정,삭제,변경시 인터셉터 처리 -->
+		<interceptor>
+			<mapping path="/freeBoard/freeModify"/>
+			<mapping path="/freeBoard/freeUpdate"/>
+			<mapping path="/freeBoard/freeDelete"/>
+			<beans:ref bean="freeBoardIntercepter"/>
+		</interceptor>
+
+	</interceptors>
+	
+	<aop:aspectj-autoproxy/>
+	<context:component-scan base-package="com.team404.util.aop"/>
+	
+</beans:beans>

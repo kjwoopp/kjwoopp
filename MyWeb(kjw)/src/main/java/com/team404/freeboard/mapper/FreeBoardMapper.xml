@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.team404.freeboard.mapper.FreeBoardMapper">
+  	
+  		<insert id="registForm">
+  			insert into freeboard(bno,writer,title,content)
+  					values(freeboard_seq.nextval,#{writer},#{title},#{content})
+  		</insert>
+  	
+  		<!-- <select id="getList" resultType="com.team404.command.FreeBoardVO">
+  			select * from freeboard
+  		</select> -->
+  		
+	  	<!-- <select id="getList" resultType="com.team404.command.FreeBoardVO">
+			
+			<![CDATA[
+				select *
+				from(select rownum as rn,bno,title,content,writer,regdate,updatedate
+						from( SELECT *
+								FROM freeboard 
+								
+								order by bno desc
+							)
+				)where rn > (#{pageNum}-1) * #{amount} and rn <= #{pageNum} * #{amount}
+	  		]]>
+	  		
+  		</select> -->
+  		
+  		<!-- 검색 페이징 -->
+  		<select id="getList" resultType="com.team404.command.FreeBoardVO">
+			
+			<![CDATA[
+				select *
+				from(select rownum as rn,bno,title,content,writer,regdate,updatedate
+						from( SELECT *
+								FROM freeboard 
+								where
+			]]>					
+								
+								<if test="searchType == 'title'">title like '%'||#{searchName}||'%'</if>
+								<if test="searchType == 'content'">content like '%'||#{searchName}||'%'</if>
+								<if test="searchType == 'writer'">writer like '%'||#{searchName}||'%'</if>
+								<if test="searchType == 'titcont'">title like '%'||#{searchName}||'%' or content like '%'||#{searchName}||'%'</if>
+								<if test="searchType == null or searchType == ''">1=1</if>
+								
+								<!--  <choose>
+								 	<when test="searchType == 'title'">title like '%'||#{searchName}||'%'</when>
+								 	<when test="searchType == 'content'">content like '%'||#{searchName}||'%'</when>
+								 	<when test="searchType == 'writer'">writer like '%'||#{searchName}||'%'</when>
+								 	<when test="searchType == 'titcont'">title like '%'||#{searchName}||'%' or content like '%'||#{searchName}||'%'</when>
+								 	<otherwise>1=1</otherwise>
+								 </choose> -->
+								 
+								 
+								
+			<![CDATA[
+								order by bno desc
+							)
+				)where rn > (#{pageNum}-1) * #{amount} and rn <= #{pageNum} * #{amount}
+	  		]]>
+	  		
+  		</select>
+  		
+  		
+		
+		<!-- 전체게시글수(반환타입 명시) -->  		
+  		<!-- <select id="getTotal" resultType="int">
+  			select COUNT(*) as total FROM freeboard
+  		</select> -->
+  		
+  		<select id="getTotal" resultType="int">
+  			
+  			select COUNT(*) as total from freeboard
+  				where
+				<if test="searchType == 'title'">title like '%'||#{searchName}||'%'</if>
+				<if test="searchType == 'content'">content like '%'||#{searchName}||'%'</if>
+				<if test="searchType == 'writer'">writer like '%'||#{searchName}||'%'</if>
+				<if test="searchType == 'titcont'">title like '%'||#{searchName}||'%' or content like '%'||#{searchName}||'%'</if>
+				<if test="searchType == null or searchType == ''">1=1</if>
+  		</select>
+  		
+  		
+  		<select id="content" resultType="com.team404.command.FreeBoardVO">
+  			select * from freeboard where bno = #{bno}
+  		</select>
+  		
+  		<update id="update" >
+  			update freeboard set writer=#{writer},title=#{title},content=#{content},updatedate = sysdate
+  					where bno = #{bno}
+  		</update>
+  		
+  		<delete id="delete">
+  			delete from freeboard where bno = #{bno}
+  		</delete>
+  		
+  		
+  		
+  </mapper>

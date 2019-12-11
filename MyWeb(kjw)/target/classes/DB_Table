@@ -1,0 +1,75 @@
+create table freeboard(
+    bno NUMBER(10,0) not null,
+    writer VARCHAR2(30),
+    title VARCHAR2(30),
+    content VARCHAR2(30),
+    regdate date DEFAULT sysdate,
+    updatedate date DEFAULT sysdate
+);
+alter table freeboard ADD CONSTRAINT freeboard_bno_pk PRIMARY KEY(bno);
+CREATE SEQUENCE freeboard_seq;
+
+
+
+
+================ 댓글 테이블==========================
+
+
+create table freereply(
+    rno NUMBER(10,0),
+    bno NUMBER(10,0),
+    reply VARCHAR2(1000),
+    replyid VARCHAR2(50),
+    replypw VARCHAR2(50),
+    replydate date DEFAULT sysdate,
+    updatedate date DEFAULT sysdate
+    
+);
+alter table freereply ADD CONSTRAINT freereply_rno_pk PRIMARY KEY(rno);
+CREATE SEQUENCE freereply_seq;
+commit;
+
+
+
+
+================ 회원 테이블==========================
+
+
+
+create table users(
+    userId VARCHAR2(50),
+    userPw VARCHAR2(50),
+    userName VARCHAR2(50),
+    userPhone1 VARCHAR(50),
+    userPhone2 VARCHAR(50),
+    userEmail1 VARCHAR2(30),
+    userEmail2 VARCHAR2(30),
+    addrZipNum VARCHAR2(50),
+    addrBasic VARCHAR2(300),
+    addrDetail VARCHAR2(300),
+    regDate date DEFAULT sysdate
+);
+
+ALTER table users add CONSTRAINT users_userId_pk PRIMARY KEY (userId);
+
+
+
+
+
+================ sns 테이블==========================
+
+create table snsboard(
+    bno NUMBER(10,0),
+    writer VARCHAR2(50) not null,
+    uploadpath VARCHAR2(100) not null, --업로드경로
+    fileloca VARCHAR2(100) not null, --날짜 파일 (날짜 별로 폴더명)
+    filename VARCHAR2(50) not null, -- 변경해서 저장할 파일이름
+    filerealname VARCHAR2(50) not null, --변경하기전 파일이름
+    content VARCHAR2(2000),
+    regdate date DEFAULT sysdate
+    
+);
+alter table snsboard ADD CONSTRAINT snsboard_bno_pk PRIMARY KEY(bno);
+CREATE SEQUENCE snsboard_seq;
+commit;
+
